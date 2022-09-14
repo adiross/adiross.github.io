@@ -53,7 +53,7 @@ const app = Vue.createApp({
     },
     computed: {
         filteredSongs: function() {
-            if(this.keyFilter != "None"){
+            if(this.keyFilter !== "None"){
                 if (this.selection === "Title"){
                     return this.songs.filter(song =>
                         song.Title.toLowerCase().includes(this.input.toLowerCase()) && song.Key === this.keyFilter
