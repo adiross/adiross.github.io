@@ -12,7 +12,8 @@ const app = Vue.createApp({
             keyFilter: "None",
             dailySong: {
                 date: null,
-                todaysSong: []
+                todaysSong: [],
+                link: ""
             }
         }
     },
@@ -41,6 +42,9 @@ const app = Vue.createApp({
                 this.dailySong.todaysSong = selectedSong
                 this.dailySong.date = new Date().getDay()
             }
+
+        const Query = this.dailySong.todaysSong.Title.split(" ").join("+")
+        this.dailySong.link = "https://www.youtube.com/results?search_query=" + Query
 
         let unique = []
             this.songs.forEach(song => {
@@ -110,11 +114,7 @@ const app = Vue.createApp({
             }
             this.selectedSongs.splice(0, this.selectedSongs.length)
             
-        },
-        
-        mounted() {  
-            
-        },
+        }
     },
     watch: {
         songs: {

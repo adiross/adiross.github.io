@@ -9,7 +9,6 @@
   <script src="https://unpkg.com/vue@3"></script>
   <script src="realBook.js"></script>
 </head>
-<!--  -->
 <body>
   <main id="app" class="container">
     <h1 class="my-3">Real Practice</h1>
@@ -17,8 +16,9 @@
       <div class="card-header">
         <h3>Todays Song:</h3>
       </div>
-      <div class="card-body">
-        <strong>{{this.dailySong.todaysSong.Title}}</strong> {{this.dailySong.todaysSong.AlternateTitle}} Page {{this.dailySong.todaysSong.PageNumber}}, Key of {{this.dailySong.todaysSong.Key}}, Composed by {{this.dailySong.todaysSong.Composer}}
+      <div class="card-body row d-flex justify-content-center">
+        <p class="col my-2"><strong>{{this.dailySong.todaysSong.Title}}</strong> {{this.dailySong.todaysSong.AlternateTitle}} Page {{this.dailySong.todaysSong.PageNumber}}, Key of {{this.dailySong.todaysSong.Key}}, Composed by {{this.dailySong.todaysSong.Composer}}</p>
+        <a :href="this.dailySong.link" class="btn btn-primary col-2" target="_blank">Open Youtube</a>
       </div>
     </div>
     <div class="input-group mb-3">
