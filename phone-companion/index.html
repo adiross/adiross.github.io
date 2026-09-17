@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#173b36" />
     <title>DaBOM Phone Companion</title>
-    <script type="module" crossorigin src="/assets/index-BkEnpCoe.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CQXpwb0D.css">
+    <script type="module" crossorigin src="./assets/index-D3D2RfGs.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-E2UFnvp9.css">
   </head>
   <body>
     <main class="app-shell">
@@ -50,8 +50,10 @@
           <label for="manual-payload">Exact DaBOM QR payload</label>
           <textarea id="manual-payload" rows="3" spellcheck="false" autocomplete="off" placeholder="DABOM1|P000123|RES-FILM-4K7-025W"></textarea>
           <div class="button-row">
-            <button id="read-pasted-payload" class="button secondary" type="button">Read pasted label</button>
+            <button id="read-pasted-payload" class="button secondary" type="button">Add 1 to offline draft</button>
+            <button id="preview-pasted-payload" class="text-button" type="button">Preview / choose quantity</button>
           </div>
+          <p class="manual-help">Adding directly saves +1. Preview instead to choose Remove inventory or a different quantity.</p>
           <p id="manual-message" class="message" role="status" aria-live="polite"></p>
         </details>
       </section>
