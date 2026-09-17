@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173b36" />
+    <title>DaBOM Phone Companion</title>
+    <script type="module" crossorigin src="/assets/index-BkEnpCoe.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CQXpwb0D.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <p class="eyebrow">DaBOM · offline companion</p>
+        <h1>Scan inventory changes</h1>
+        <p class="intro">Confirm a labeled part, collect changes locally, then download a batch for a future DaBOM desktop import.</p>
+      </header>
+
+      <section class="panel" aria-labelledby="location-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Optional context</p>
+            <h2 id="location-title">Location hint</h2>
+          </div>
+        </div>
+        <label for="location-hint">Where are these parts? <span class="muted">The desktop resolves this later.</span></label>
+        <input id="location-hint" type="text" autocomplete="off" placeholder="e.g. Blue drawer cabinet, row 3" maxlength="250" />
+      </section>
+
+      <section class="panel" aria-labelledby="scan-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">1 · Read label</p>
+            <h2 id="scan-title">Camera scanner</h2>
+          </div>
+          <span id="camera-state" class="status-pill" data-kind="idle">Camera stopped</span>
+        </div>
+        <div class="camera-frame">
+          <video id="camera-preview" muted playsinline aria-label="Camera preview for QR scanning"></video>
+          <p id="camera-placeholder">Start the camera, then centre the DaBOM label in view.</p>
+        </div>
+        <div class="button-row">
+          <button id="start-camera" class="button primary" type="button">Start rear camera</button>
+          <button id="stop-camera" class="button secondary" type="button" disabled>Stop camera</button>
+        </div>
+        <p id="camera-message" class="message" role="status" aria-live="polite">Camera scanning is ready when your browser supports it.</p>
+
+        <details class="manual-entry" open>
+          <summary>Camera unavailable? Paste a label payload instead</summary>
+          <label for="manual-payload">Exact DaBOM QR payload</label>
+          <textarea id="manual-payload" rows="3" spellcheck="false" autocomplete="off" placeholder="DABOM1|P000123|RES-FILM-4K7-025W"></textarea>
+          <div class="button-row">
+            <button id="read-pasted-payload" class="button secondary" type="button">Read pasted label</button>
+          </div>
+          <p id="manual-message" class="message" role="status" aria-live="polite"></p>
+        </details>
+      </section>
+
+      <section id="result-panel" class="panel result-panel" aria-labelledby="result-title" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">2 · Confirm label</p>
+            <h2 id="result-title">Scanned item</h2>
+          </div>
+          <button id="cancel-result" class="text-button" type="button">Cancel</button>
+        </div>
+        <dl class="identity-card">
+          <div><dt>Part ID</dt><dd id="result-part-id"></dd></div>
+          <div><dt>Catalog code</dt><dd id="result-catalog-code"></dd></div>
+        </dl>
+        <div class="change-controls">
+          <label for="change-mode">Inventory change</label>
+          <select id="change-mode">
+            <option value="add">Add inventory</option>
+            <option value="remove">Remove inventory</option>
+          </select>
+          <label for="change-quantity">Quantity</label>
+          <input id="change-quantity" type="number" inputmode="numeric" min="1" step="1" value="1" required />
+        </div>
+        <p id="quantity-message" class="message error" role="alert" hidden></p>
+        <button id="save-change" class="button primary full-width" type="button">Add to draft</button>
+      </section>
+
+      <section class="panel" aria-labelledby="draft-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">3 · Offline draft</p>
+            <h2 id="draft-title">Batch changes</h2>
+          </div>
+          <span id="draft-count" class="status-pill" data-kind="idle">0 items</span>
+        </div>
+        <p id="draft-empty" class="empty-state">No changes yet. Scan or paste a DaBOM label to begin.</p>
+        <ul id="draft-items" class="draft-items" aria-label="Draft inventory changes"></ul>
+        <p class="draft-metadata">Batch ID: <code id="batch-id"></code><br />Last changed: <time id="updated-at"></time></p>
+        <div class="button-row export-actions">
+          <button id="export-draft" class="button primary" type="button" disabled>Download JSON batch</button>
+          <button id="clear-draft" class="button danger" type="button" disabled>Clear draft</button>
+        </div>
+        <p id="export-message" class="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <footer>Stored only in this browser until you download it. Desktop import is planned for the next DaBOM phase.</footer>
+    </main>
+  </body>
+</html>
