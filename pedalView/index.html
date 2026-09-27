@@ -1,0 +1,1431 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Faceplate (Copy)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --bg:#ece7d9; --surface:#f7f3e7; --surface-2:#fffdf6; --border:#cdc4a8;
+  --text:#1c1c18; --text-dim:#6b6653; --text-faint:#a39c85;
+  --accent:#2f6f8f; --accent-ink:#fbf9f2; --copper:#b5622a;
+  --good:#3c7a4e; --danger:#b23a3a;
+  --knob:#2f6f8f; --toggle:#b5622a; --footsw:#6a3f63; --jack:#3c7a4e; --dcjack:#4a5a8a; --led:#c23b3b; --blank:#8b8570;
+  --shadow: 0 1px 2px rgba(28,28,24,.06), 0 6px 16px rgba(28,28,24,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151a; --surface:#191d23; --surface-2:#1f242b; --border:#313944;
+    --text:#e9e6dc; --text-dim:#8f97a3; --text-faint:#5c6470;
+    --accent:#67b9df; --accent-ink:#0d1013; --copper:#e0925a;
+    --good:#5fb47c; --danger:#e2685f;
+    --knob:#67b9df; --toggle:#e0925a; --footsw:#b98fc9; --jack:#5fb47c; --dcjack:#8fa0e0; --led:#ff6b62; --blank:#7d8494;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151a; --surface:#191d23; --surface-2:#1f242b; --border:#313944;
+  --text:#e9e6dc; --text-dim:#8f97a3; --text-faint:#5c6470;
+  --accent:#67b9df; --accent-ink:#0d1013; --copper:#e0925a;
+  --good:#5fb47c; --danger:#e2685f;
+  --knob:#67b9df; --toggle:#e0925a; --footsw:#b98fc9; --jack:#5fb47c; --dcjack:#8fa0e0; --led:#ff6b62; --blank:#7d8494;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:13.5px; line-height:1.45;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+h1,h2,h3{text-wrap:balance; margin:0;}
+button{font-family:inherit; font-size:inherit; cursor:pointer;}
+input,select{font-family:inherit; font-size:inherit;}
+::selection{background:var(--accent); color:var(--accent-ink);}
+
+.app{ display:grid; grid-template-columns:266px 1fr 268px; grid-template-rows:auto 1fr; height:100vh; gap:1px; background:var(--border); }
+.topbar{ grid-column:1/-1; background:var(--surface); display:flex; align-items:center; gap:18px; padding:0 16px; height:52px; }
+.wordmark{ font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:15px; letter-spacing:.02em; display:flex; align-items:baseline; gap:8px; }
+.wordmark .dot{ color:var(--copper); }
+.topbar-spacer{ flex:1; }
+.topbar-actions{ display:flex; gap:8px; }
+
+.rail{ background:var(--surface); overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:16px; min-height:0; }
+.rail::-webkit-scrollbar{ width:9px; }
+.rail::-webkit-scrollbar-thumb{ background:var(--border); border-radius:5px; }
+
+.section-label{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--text-dim);
+  display:flex; align-items:center; gap:8px; margin-bottom:9px;
+}
+.section-label::after{ content:""; flex:1; height:1px; background:var(--border); }
+
+.field{ display:flex; flex-direction:column; gap:4px; margin-bottom:9px; }
+.field label{ font-size:11px; color:var(--text-dim); }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+input[type=text],input[type=number],select,textarea{
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+  border-radius:5px; padding:6px 8px; width:100%;
+}
+input[type=number]{ font-family:"IBM Plex Mono",monospace; }
+input:focus,select:focus,textarea:focus,button:focus-visible{
+  outline:2px solid var(--accent); outline-offset:1px;
+}
+input[type=color]{ -webkit-appearance:none; appearance:none; width:32px; height:28px; border:1px solid var(--border); border-radius:5px; background:none; padding:2px; }
+input[type=range]{ width:100%; accent-color:var(--accent); }
+input[type=checkbox]{ accent-color:var(--accent); }
+
+.btn{
+  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  border-radius:6px; padding:6px 11px; font-weight:500; font-size:12px;
+  display:inline-flex; align-items:center; gap:6px; transition:border-color .12s, background .12s;
+}
+.btn:hover{ border-color:var(--accent); }
+.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600; }
+.btn.ghost{ background:transparent; }
+.btn.active{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, var(--surface-2)); }
+.btn.danger:hover{ border-color:var(--danger); color:var(--danger); }
+.btn.small{ padding:4px 8px; font-size:11px; }
+.btn.block{ width:100%; justify-content:center; }
+.btn:disabled{ opacity:.4; cursor:default; }
+.btn:disabled:hover{ border-color:var(--border); }
+
+.palette{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.pal-btn{
+  border:1px solid var(--border); background:var(--surface-2); border-radius:7px;
+  padding:8px 6px; display:flex; flex-direction:column; align-items:center; gap:5px;
+  font-size:10.5px; color:var(--text-dim); font-weight:500;
+}
+.pal-btn .swatch{ width:18px; height:18px; border-radius:50%; }
+.pal-btn.active{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--surface-2)); color:var(--text); }
+.pal-btn:hover{ border-color:var(--text-faint); }
+
+.workspace{ background:var(--bg); position:relative; display:flex; flex-direction:column; min-width:0; min-height:0; }
+.tabs{ display:flex; gap:2px; padding:8px 8px 0; }
+.tab{
+  background:transparent; border:none; border-bottom:2px solid transparent; color:var(--text-dim);
+  padding:8px 14px; font-weight:600; font-size:12px; font-family:"IBM Plex Mono",monospace;
+  letter-spacing:.04em; text-transform:uppercase;
+}
+.tab.active{ color:var(--text); border-bottom-color:var(--copper); }
+.canvas-wrap{ flex:1; position:relative; min-height:0; }
+.canvas-pane{ position:absolute; inset:0; display:none; }
+.canvas-pane.active{ display:block; }
+#paneTemplate.active{ display:flex; flex-direction:column; }
+.face-strip{ display:flex; gap:6px; padding:10px 12px 0; flex-wrap:wrap; }
+.face-btn{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:5px 10px;
+  font-size:11.5px; font-weight:500; color:var(--text-dim); display:inline-flex; align-items:center; gap:7px;
+}
+.face-btn:hover{ border-color:var(--text-faint); }
+.face-btn.active{ color:var(--text); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+.face-btn .count{ font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--text-faint); }
+.face-btn.active .count{ color:var(--accent); }
+.tcanvas-box{ position:relative; flex:1; min-height:0; }
+#templateCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:crosshair; touch-action:none; }
+#three-mount{ position:absolute; inset:0; }
+#three-mount canvas{ display:block; touch-action:none; }
+
+.hint-bar{
+  position:absolute; left:12px; bottom:12px; background:var(--surface); border:1px solid var(--border);
+  border-radius:7px; padding:7px 12px; font-size:11.5px; color:var(--text-dim); box-shadow:var(--shadow);
+  max-width:min(70%, 480px);
+}
+.hint-bar b{ color:var(--text); font-weight:600; }
+.view-controls{ position:absolute; right:12px; top:12px; display:flex; gap:6px; z-index:2; }
+
+.hole-list{ display:flex; flex-direction:column; gap:5px; max-height:230px; overflow-y:auto; }
+.hole-row{
+  display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; border:1px solid transparent;
+  background:var(--surface-2); cursor:pointer; font-size:11.5px;
+}
+.hole-row:hover{ border-color:var(--border); }
+.hole-row.selected{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+.hole-row .chip{ width:9px; height:9px; border-radius:50%; flex:none; }
+.hole-row .name{ flex:1; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hole-row .face-tag{ font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.04em; }
+.hole-row .dims{ font-family:"IBM Plex Mono",monospace; color:var(--text-dim); font-size:10.5px; min-width:34px; text-align:right; }
+
+.inspector{ border-top:1px solid var(--border); padding-top:12px; }
+.inspector-empty{ color:var(--text-faint); font-size:12px; padding:10px 0; text-align:center; }
+.inspector-title{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.inspector-title .chip{ width:11px; height:11px; border-radius:50%; }
+.inspector-title span{ font-weight:600; font-size:12.5px; }
+.readout{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--text-dim); margin:-2px 0 10px; }
+
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(10,10,8,.5); display:flex; align-items:center; justify-content:center;
+  z-index:50; padding:24px;
+}
+.modal{
+  background:var(--surface); border:1px solid var(--border); border-radius:12px; width:min(580px,100%);
+  max-height:88vh; display:flex; flex-direction:column; box-shadow:var(--shadow);
+}
+.modal-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); }
+.modal-head h3{ font-size:14px; }
+.modal-body{ padding:16px 18px; overflow-y:auto; }
+.modal-foot{ padding:12px 18px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; }
+textarea.code{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; min-height:120px; resize:vertical; }
+.muted{ color:var(--text-dim); font-size:11.5px; }
+p.muted{ margin:0 0 10px; }
+.file-drop{
+  border:1.5px dashed var(--border); border-radius:8px; padding:14px; text-align:center; color:var(--text-dim);
+  font-size:12px; cursor:pointer;
+}
+.file-drop:hover{ border-color:var(--accent); color:var(--text); }
+.map-row{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; margin-bottom:6px; font-size:12px; }
+.map-row .side-tag{ font-family:"IBM Plex Mono",monospace; font-weight:600; min-width:120px; }
+.check{ display:flex; align-items:center; gap:8px; font-size:12px; margin:6px 0; }
+.summary{ background:var(--surface-2); border:1px solid var(--border); border-radius:7px; padding:9px 12px; font-size:12px; margin:12px 0; }
+.summary .mono{ color:var(--accent); }
+
+.toast{
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  background:var(--text); color:var(--surface); padding:9px 16px; border-radius:8px; font-size:12.5px;
+  font-weight:500; box-shadow:var(--shadow); z-index:80; opacity:0; pointer-events:none; transition:opacity .18s, transform .18s;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+@media (max-width: 900px){
+  .app{ grid-template-columns:1fr; grid-template-rows:auto auto 1fr auto; height:auto; min-height:100vh; }
+  .canvas-wrap{ min-height:70vh; }
+}
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="wordmark">FACEPLATE<span class="dot">&middot;</span><span style="font-weight:500;color:var(--text-dim);font-size:11px;">pedal enclosure studio</span></div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="btn primary" id="btnImport">Import Tayda drill file</button>
+      <button class="btn" id="btnExport">Export / Save</button>
+      <button class="btn ghost" id="btnHelp">?</button>
+    </div>
+  </div>
+
+  <div class="rail" id="leftRail">
+    <div>
+      <div class="section-label">Enclosure</div>
+      <div class="field">
+        <label for="presetSelect">Tayda size preset</label>
+        <select id="presetSelect"></select>
+      </div>
+      <div class="field">
+        <label>Width &times; Length (mm)</label>
+        <div class="row2">
+          <input type="number" id="encW" min="20" max="400" step="0.5">
+          <input type="number" id="encH" min="20" max="400" step="0.5">
+        </div>
+      </div>
+      <div class="field">
+        <label>Depth (mm)</label>
+        <input type="number" id="encDepth" min="10" max="80" step="0.5">
+      </div>
+      <div class="field">
+        <label>Enclosure finish</label>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;">
+          <input type="color" id="encColor">
+          <span class="muted mono" id="encColorHex">#B8BCC0</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Print artwork</div>
+      <div class="file-drop" id="artDrop"></div>
+      <input type="file" id="artInput" accept=".pdf,application/pdf,image/*" style="display:none;">
+      <div id="artControls" style="display:none;margin-top:10px;">
+        <div class="field" style="margin-bottom:6px;">
+          <label>Artwork size (mm)</label>
+          <div class="row2">
+            <input type="number" id="artW" min="5" max="400" step="0.5">
+            <input type="number" id="artH" min="5" max="400" step="0.5">
+          </div>
+        </div>
+        <button class="btn small ghost" id="artClear">Remove artwork</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Place a hole</div>
+      <div class="palette" id="palette"></div>
+      <p class="muted" style="margin:8px 0 0;">Pick a part, then click the template. Drag any hole to move it.</p>
+    </div>
+
+    <div>
+      <div class="section-label">Layout</div>
+      <div class="row2">
+        <button class="btn small" id="btnExample">Load example</button>
+        <button class="btn small danger" id="btnClearHoles">Clear holes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="tabs">
+      <button class="tab active" data-view="template">Drill Template</button>
+      <button class="tab" data-view="preview">3D Preview</button>
+    </div>
+    <div class="canvas-wrap">
+      <div class="canvas-pane active" id="paneTemplate">
+        <div class="face-strip" id="faceStrip"></div>
+        <div class="tcanvas-box">
+          <canvas id="templateCanvas"></canvas>
+          <div class="hint-bar" id="templateHint"></div>
+        </div>
+      </div>
+      <div class="canvas-pane" id="panePreview">
+        <div id="three-mount"></div>
+        <div class="view-controls">
+          <button class="btn small" id="btnHideKnobs" aria-pressed="false">Hide knobs</button>
+          <button class="btn small" data-cam="front">Front</button>
+          <button class="btn small" data-cam="back">Back</button>
+          <button class="btn small" data-cam="top">Top</button>
+          <button class="btn small" data-cam="reset">Reset</button>
+        </div>
+        <div class="hint-bar">Drag to orbit &middot; scroll to zoom &middot; use Back to see the jack end</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail" id="rightRail">
+    <div>
+      <div class="section-label">Holes <span class="mono" id="holeCount" style="text-transform:none;letter-spacing:0;color:var(--text-faint);"></span></div>
+      <div class="hole-list" id="holeList"></div>
+    </div>
+    <div class="inspector" id="inspector"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+function isDark(){
+  var root = document.documentElement;
+  if(root.getAttribute('data-theme')==='dark') return true;
+  if(root.getAttribute('data-theme')==='light') return false;
+  return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+function round1(n){ return Math.round(n*10)/10; }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* ---------- part types ---------- */
+var TYPES = {
+  knob:      { label:"Potentiometer",      short:"Knob",       color:"var(--knob)",   hex:{light:"#2f6f8f",dark:"#67b9df"}, defaultDia:8,  defaultColor:"#ecebe6" },
+  toggle:    { label:"Toggle switch",      short:"Toggle",     color:"var(--toggle)", hex:{light:"#b5622a",dark:"#e0925a"}, defaultDia:6,  defaultColor:"#c9cdd1" },
+  footswitch:{ label:"Footswitch (3PDT)",  short:"Footswitch", color:"var(--footsw)", hex:{light:"#6a3f63",dark:"#b98fc9"}, defaultDia:12, defaultColor:"#1c1c1c" },
+  jack:      { label:"1/4\" jack",         short:"Jack",       color:"var(--jack)",   hex:{light:"#3c7a4e",dark:"#5fb47c"}, defaultDia:10, defaultColor:"#c9cdd1" },
+  dcjack:    { label:"DC power jack",      short:"DC jack",    color:"var(--dcjack)", hex:{light:"#4a5a8a",dark:"#8fa0e0"}, defaultDia:12, defaultColor:"#c9cdd1" },
+  led:       { label:"Indicator LED",      short:"LED",        color:"var(--led)",    hex:{light:"#c23b3b",dark:"#ff6b62"}, defaultDia:6,  defaultColor:"#ff3b30" },
+  blank:     { label:"Blank / unassigned", short:"Blank",      color:"var(--blank)",  hex:{light:"#8b8570",dark:"#7d8494"}, defaultDia:6,  defaultColor:"#444444" }
+};
+var TYPE_ORDER = ["knob","toggle","footswitch","jack","dcjack","led","blank"];
+
+/* w = short side, h = long side (portrait, footswitch end at the bottom - same orientation as Tayda's drill files) */
+var PRESETS = [
+  { key:"1590A",  name:"1590A  38 x 92 x 31mm",   w:38,  h:92,  d:31 },
+  { key:"1590B",  name:"1590B  60 x 112 x 31mm",  w:60,  h:112, d:31 },
+  { key:"1590BB", name:"1590BB 94 x 120 x 34mm",  w:94,  h:120, d:34 },
+  { key:"125B",   name:"125B   66 x 122 x 39mm",  w:66,  h:122, d:39 },
+  { key:"1590DD", name:"1590DD 120 x 188 x 38mm", w:120, h:188, d:38 },
+  { key:null,     name:"Custom size" }
+];
+
+var FACES = [
+  { id:"top",        label:"Top plate",  tag:"Top" },
+  { id:"end_top",    label:"Top end",    tag:"Top end" },
+  { id:"end_bottom", label:"Bottom end", tag:"Btm end" },
+  { id:"left",       label:"Left side",  tag:"Left" },
+  { id:"right",      label:"Right side", tag:"Right" }
+];
+function faceInfo(id){ return FACES.filter(function(f){return f.id===id;})[0] || FACES[0]; }
+
+/* ---------- state ---------- */
+var state = {
+  enclosure:{ w:60, h:112, depth:31, color:"#b8bcc0", artW:null, artH:null },
+  holes:[],
+  selectedIds:[],
+  activeTool:null,
+  activeFace:"top",
+  nextId:1
+};
+var artSource = null;   // canvas or image; kept out of state so it never hits JSON/localStorage
+var artAspect = 1;
+
+function faceDims(face){
+  var e = state.enclosure;
+  if(face==='top') return { w:e.w, h:e.h };
+  if(face==='end_top' || face==='end_bottom') return { w:e.w, h:e.depth };
+  return { w:e.h, h:e.depth };
+}
+function uid(){ return "h" + (state.nextId++); }
+function makeHole(type, x, y, face){
+  var def = TYPES[type];
+  return { id:uid(), type:type, face:face||state.activeFace, x:round1(x), y:round1(y), d:def.defaultDia, rotation:0, label:"", color:def.defaultColor };
+}
+function holeById(id){ return state.holes.filter(function(h){return h.id===id;})[0]; }
+
+function loadExample(){
+  state.enclosure = { w:60, h:112, depth:31, color:"#b8bcc0", artW:null, artH:null };
+  artSource = null; refreshArtUI();
+  state.holes = [];
+  function add(type,x,y,face,extra){ var h = makeHole(type,x,y,face); Object.assign(h, extra||{}); state.holes.push(h); }
+  add("knob", 17, 20, "top", {label:"Gain"});
+  add("knob", 43, 20, "top", {label:"Level"});
+  add("knob", 30, 41, "top", {label:"Tone"});
+  add("led", 30, 66, "top", {d:6});
+  add("footswitch", 30, 90, "top", {d:12.5});
+  add("jack", 14, 15.5, "end_top", {d:10.5, label:"In"});
+  add("dcjack", 30, 15.5, "end_top", {d:12.5});
+  add("jack", 46, 15.5, "end_top", {d:10.5, label:"Out"});
+  state.selectedIds = []; state.activeFace = "top";
+  syncEnclosureInputs();
+  onStateChanged();
+}
+
+/* ---------- persistence ---------- */
+var STORAGE_KEY = "faceplate.design.v2";
+function loadFromStorage(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    var data = JSON.parse(raw);
+    if(data && data.enclosure && Array.isArray(data.holes)){
+      state = data;
+      state.selectedIds = []; state.activeTool = null;
+      state.activeFace = state.activeFace || "top";
+      state.enclosure.artW = null; state.enclosure.artH = null;
+      var maxId = 0;
+      state.holes.forEach(function(h){ h.face = h.face || "top"; var n = parseInt(String(h.id).replace(/\D/g,''),10)||0; if(n>maxId) maxId=n; });
+      state.nextId = Math.max(state.nextId||1, maxId+1);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+var saveTimer=null;
+function saveDebounced(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }, 500);
+}
+var toastTimer=null;
+function toast(msg){
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2600);
+}
+
+/* =====================================================================
+   Left rail
+===================================================================== */
+var presetSelect = document.getElementById('presetSelect');
+PRESETS.forEach(function(p, i){
+  var opt = document.createElement('option');
+  opt.value = i; opt.textContent = p.name;
+  presetSelect.appendChild(opt);
+});
+var encW = document.getElementById('encW');
+var encH = document.getElementById('encH');
+var encDepth = document.getElementById('encDepth');
+var encColor = document.getElementById('encColor');
+var encColorHex = document.getElementById('encColorHex');
+
+function syncPresetSelect(){
+  var e = state.enclosure, matched = -1;
+  PRESETS.forEach(function(p,i){ if(p.key && p.w===e.w && p.h===e.h && p.d===e.depth) matched = i; });
+  presetSelect.value = matched>=0 ? matched : PRESETS.length-1;
+}
+function syncEnclosureInputs(){
+  var e = state.enclosure;
+  encW.value = e.w; encH.value = e.h; encDepth.value = e.depth;
+  encColor.value = e.color;
+  encColorHex.textContent = e.color.toUpperCase();
+  syncPresetSelect();
+}
+function applyPreset(p){
+  state.enclosure.w=p.w; state.enclosure.h=p.h; state.enclosure.depth=p.d;
+  syncEnclosureInputs();
+}
+presetSelect.addEventListener('change', function(){
+  var p = PRESETS[+presetSelect.value];
+  if(p.key){ applyPreset(p); fitScale(); onStateChanged(); }
+});
+[[encW,'w'],[encH,'h'],[encDepth,'depth']].forEach(function(pair){
+  pair[0].addEventListener('input', function(){
+    var v = parseFloat(pair[0].value); if(isNaN(v)||v<=0) return;
+    state.enclosure[pair[1]] = v;
+    syncPresetSelect(); fitScale();
+    onStateChanged();
+  });
+});
+encColor.addEventListener('input', function(){
+  state.enclosure.color = encColor.value;
+  encColorHex.textContent = encColor.value.toUpperCase();
+  onStateChanged();
+});
+
+/* ---------- artwork ---------- */
+var artDrop = document.getElementById('artDrop');
+var artInput = document.getElementById('artInput');
+var artControls = document.getElementById('artControls');
+var artWEl = document.getElementById('artW');
+var artHEl = document.getElementById('artH');
+var ART_HINT = "Upload the print-ready PDF, or a PNG / JPG<br><span style='font-size:10.5px;'>goes on the top plate, centered</span>";
+
+function refreshArtUI(name){
+  if(artSource){
+    artControls.style.display = 'block';
+    artWEl.value = round1(state.enclosure.artW); artHEl.value = round1(state.enclosure.artH);
+    artDrop.innerHTML = esc(name || "Artwork loaded") + "<br><span style='font-size:10.5px;'>click to replace</span>";
+  } else {
+    artControls.style.display = 'none';
+    artDrop.innerHTML = ART_HINT;
+  }
+}
+artDrop.addEventListener('click', function(){ artInput.click(); });
+artInput.addEventListener('change', function(){
+  var f = artInput.files[0]; if(!f) return;
+  var isPdf = f.type==='application/pdf' || /\.pdf$/i.test(f.name);
+  var job = isPdf ? loadPdfArt(f) : loadImageArt(f);
+  if(isPdf) toast("Reading PDF...");
+  Promise.race([job, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 30000); })]).then(function(res){
+    artSource = res.source; artAspect = res.wMm/res.hMm;
+    state.enclosure.artW = res.wMm; state.enclosure.artH = res.hMm;
+    refreshArtUI(f.name.length>34 ? f.name.slice(0,31)+"..." : f.name);
+    onStateChanged();
+    toast(isPdf ? "PDF placed at its printed size ("+round1(res.wMm)+" x "+round1(res.hMm)+" mm)" : "Artwork placed on the top plate");
+  }).catch(function(err){
+    toast(isPdf ? "That PDF couldn't be read - export it as a PNG instead" : "That image couldn't be read");
+  });
+  artInput.value = '';
+});
+function loadImageArt(file){
+  return new Promise(function(resolve, reject){
+    var reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = function(){
+      var img = new Image();
+      img.onerror = reject;
+      img.onload = function(){
+        var fd = faceDims('top');
+        var s = Math.min(fd.w/img.naturalWidth, fd.h/img.naturalHeight);
+        resolve({ source:img, wMm:img.naturalWidth*s, hMm:img.naturalHeight*s });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function loadPdfArt(file){
+  if(!window.pdfjsLib) return Promise.reject(new Error('pdf.js unavailable'));
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  return file.arrayBuffer().then(function(buf){
+    return window.pdfjsLib.getDocument({ data:buf }).promise;
+  }).then(function(pdf){
+    return pdf.getPage(1);
+  }).then(function(page){
+    var vp1 = page.getViewport({ scale:1 });
+    var scale = Math.min(6, 3200/Math.max(vp1.width, vp1.height));
+    var vp = page.getViewport({ scale:scale });
+    var c = document.createElement('canvas');
+    c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+    return page.render({ canvasContext:c.getContext('2d'), viewport:vp, background:'rgba(0,0,0,0)' }).promise.then(function(){
+      return { source:c, wMm:vp1.width/72*25.4, hMm:vp1.height/72*25.4 };
+    });
+  });
+}
+artWEl.addEventListener('input', function(){
+  var v = parseFloat(artWEl.value); if(!(v>0)) return;
+  state.enclosure.artW = v; state.enclosure.artH = v/artAspect;
+  artHEl.value = round1(state.enclosure.artH);
+  onStateChanged({keepInspector:true});
+});
+artHEl.addEventListener('input', function(){
+  var v = parseFloat(artHEl.value); if(!(v>0)) return;
+  state.enclosure.artH = v; state.enclosure.artW = v*artAspect;
+  artWEl.value = round1(state.enclosure.artW);
+  onStateChanged({keepInspector:true});
+});
+document.getElementById('artClear').addEventListener('click', function(){
+  artSource = null; state.enclosure.artW = null; state.enclosure.artH = null;
+  refreshArtUI(); onStateChanged();
+});
+
+/* ---------- palette ---------- */
+var palette = document.getElementById('palette');
+TYPE_ORDER.forEach(function(t){
+  var def = TYPES[t];
+  var btn = document.createElement('button');
+  btn.className = 'pal-btn'; btn.dataset.type = t;
+  btn.innerHTML = '<span class="swatch" style="background:'+def.color+'"></span>' + def.short;
+  btn.addEventListener('click', function(){
+    state.activeTool = state.activeTool === t ? null : t;
+    updatePaletteUI();
+  });
+  palette.appendChild(btn);
+});
+function updatePaletteUI(){
+  Array.prototype.forEach.call(palette.children, function(b){
+    b.classList.toggle('active', b.dataset.type === state.activeTool);
+  });
+  var hint = document.getElementById('templateHint');
+  if(state.activeTool){
+    hint.innerHTML = "Click the plate to place a <b>"+TYPES[state.activeTool].short+"</b> on the <b>"+faceInfo(state.activeFace).label+"</b>. Esc to stop.";
+  } else {
+    hint.innerHTML = "Drag a hole to move it. Shift-click to select several.";
+  }
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ state.activeTool = null; updatePaletteUI(); }
+  var tag = document.activeElement && document.activeElement.tagName;
+  if((e.key === 'Delete' || e.key === 'Backspace') && state.selectedIds.length && tag!=='INPUT' && tag!=='TEXTAREA' && tag!=='SELECT'){
+    e.preventDefault(); deleteSelected();
+  }
+});
+document.getElementById('btnExample').addEventListener('click', function(){ loadExample(); });
+document.getElementById('btnClearHoles').addEventListener('click', function(){
+  if(!state.holes.length) return;
+  if(!confirm("Remove all "+state.holes.length+" holes from this layout?")) return;
+  state.holes = []; state.selectedIds = []; onStateChanged();
+});
+
+/* ---------- face strip ---------- */
+var faceStrip = document.getElementById('faceStrip');
+function renderFaceStrip(){
+  faceStrip.innerHTML = "";
+  FACES.forEach(function(f){
+    var n = state.holes.filter(function(h){return h.face===f.id;}).length;
+    var b = document.createElement('button');
+    b.className = 'face-btn' + (f.id===state.activeFace ? ' active' : '');
+    b.innerHTML = esc(f.label) + (n ? ' <span class="count">'+n+'</span>' : '');
+    b.addEventListener('click', function(){ setActiveFace(f.id); });
+    faceStrip.appendChild(b);
+  });
+}
+function setActiveFace(id){
+  state.activeFace = id;
+  renderFaceStrip(); updatePaletteUI(); fitScale(); drawTemplate();
+}
+
+/* =====================================================================
+   Right rail
+===================================================================== */
+var holeListEl = document.getElementById('holeList');
+var holeCountEl = document.getElementById('holeCount');
+var inspectorEl = document.getElementById('inspector');
+
+function holeName(h){
+  if(h.label) return h.label;
+  var same = state.holes.filter(function(x){return x.type===h.type;});
+  return TYPES[h.type].short + " " + (same.indexOf(h)+1);
+}
+function renderHoleList(){
+  holeCountEl.textContent = state.holes.length ? ("("+state.holes.length+")") : "";
+  holeListEl.innerHTML = "";
+  if(!state.holes.length){
+    var empty = document.createElement('div');
+    empty.className = 'muted';
+    empty.textContent = "No holes yet. Place one from the palette or import a Tayda drill file.";
+    holeListEl.appendChild(empty);
+    return;
+  }
+  state.holes.forEach(function(h){
+    var def = TYPES[h.type];
+    var row = document.createElement('div');
+    row.className = 'hole-row' + (state.selectedIds.indexOf(h.id)>=0 ? ' selected':'');
+    row.innerHTML = '<span class="chip" style="background:'+def.color+'"></span>'+
+      '<span class="name">'+esc(holeName(h))+'</span>'+
+      '<span class="face-tag">'+esc(faceInfo(h.face).tag)+'</span>'+
+      '<span class="dims">&#216;'+h.d+'</span>';
+    row.addEventListener('click', function(e){ selectHole(h.id, e.shiftKey); });
+    holeListEl.appendChild(row);
+  });
+}
+function selectHole(id, additive){
+  if(additive){
+    var idx = state.selectedIds.indexOf(id);
+    if(idx>=0) state.selectedIds.splice(idx,1); else state.selectedIds.push(id);
+  } else {
+    state.selectedIds = [id];
+    var h = holeById(id);
+    if(h && h.face !== state.activeFace){ state.activeFace = h.face; fitScale(); }
+  }
+  renderUI();
+}
+function deleteSelected(){
+  state.holes = state.holes.filter(function(h){ return state.selectedIds.indexOf(h.id)<0; });
+  state.selectedIds = [];
+  onStateChanged();
+}
+function centerReadout(h){
+  var fd = faceDims(h.face);
+  var cx = round1(h.x - fd.w/2), cy = round1(fd.h/2 - h.y);
+  return "From center (Tayda file): x " + (cx>0?"+":"") + cx + "  y " + (cy>0?"+":"") + cy;
+}
+function typeOptions(sel){
+  return TYPE_ORDER.map(function(t){return '<option value="'+t+'"'+(t===sel?' selected':'')+'>'+TYPES[t].label+'</option>';}).join('');
+}
+function renderInspector(){
+  var n = state.selectedIds.length;
+  if(n === 0){
+    inspectorEl.innerHTML = '<div class="inspector-empty">Select a hole to edit it</div>';
+    return;
+  }
+  if(n > 1){
+    inspectorEl.innerHTML = '<div class="section-label">'+n+' selected</div>'+
+      '<div class="field"><label>Assign a part to all selected</label>'+
+      '<select id="bulkType"><option value="">Choose part...</option>'+typeOptions(null)+'</select></div>'+
+      '<button class="btn small danger block" id="bulkDelete">Delete selected</button>';
+    document.getElementById('bulkType').addEventListener('change', function(e){
+      var t = e.target.value; if(!t) return;
+      state.holes.forEach(function(h){
+        if(state.selectedIds.indexOf(h.id)>=0){ h.type=t; h.color=TYPES[t].defaultColor; }
+      });
+      onStateChanged();
+    });
+    document.getElementById('bulkDelete').addEventListener('click', deleteSelected);
+    return;
+  }
+  var h = holeById(state.selectedIds[0]);
+  if(!h){ state.selectedIds=[]; renderInspector(); return; }
+  var def = TYPES[h.type];
+  var fd = faceDims(h.face);
+  inspectorEl.innerHTML =
+    '<div class="inspector-title"><span class="chip" style="background:'+def.color+'"></span><span>'+def.label+' &middot; '+esc(faceInfo(h.face).label)+'</span></div>'+
+    '<div class="field"><label>Part</label><select id="fType">'+typeOptions(h.type)+'</select></div>'+
+    '<div class="field"><label>Position from top-left (mm)</label><div class="row2">'+
+      '<input type="number" id="fX" step="0.1" value="'+h.x+'">'+
+      '<input type="number" id="fY" step="0.1" value="'+h.y+'">'+
+    '</div></div>'+
+    '<div class="readout" id="fReadout">'+esc(centerReadout(h))+'</div>'+
+    '<div class="field"><label>Hole diameter (mm)</label><input type="number" id="fD" step="0.1" min="2" max="40" value="'+h.d+'"></div>'+
+    '<div class="field"><label>Label (silkscreen text)</label><input type="text" id="fLabel" maxlength="14" value="'+esc(h.label)+'" placeholder="optional"></div>'+
+    (h.type==='knob' ? '<div class="field"><label>Knob diameter (mm)</label><input type="number" id="fKD" step="0.5" min="10" max="40" value="'+(h.knobDia||'')+'" placeholder="auto ('+round1(knobDiameter(h))+')"></div>' : '')+
+    (h.type==='toggle' ? '<div class="field"><label>Lever direction</label><input type="range" id="fRot" min="0" max="359" value="'+h.rotation+'"></div>' : '')+
+    ((h.type==='knob'||h.type==='led') ? '<div class="field"><label>'+(h.type==='led'?'LED color':'Knob color')+'</label><input type="color" id="fColor" value="'+h.color+'"></div>' : '')+
+    '<button class="btn small danger block" id="fDelete" style="margin-top:6px;">Delete hole</button>';
+
+  var keep = { keepInspector:true };
+  document.getElementById('fType').addEventListener('change', function(e){
+    h.type=e.target.value; h.color=TYPES[h.type].defaultColor; onStateChanged();
+  });
+  function pos(){ document.getElementById('fReadout').textContent = centerReadout(h); }
+  document.getElementById('fX').addEventListener('input', function(e){ var v=parseFloat(e.target.value); if(isNaN(v)) return; h.x=clamp(v,0,fd.w); pos(); onStateChanged(keep); });
+  document.getElementById('fY').addEventListener('input', function(e){ var v=parseFloat(e.target.value); if(isNaN(v)) return; h.y=clamp(v,0,fd.h); pos(); onStateChanged(keep); });
+  document.getElementById('fD').addEventListener('input', function(e){ var v=parseFloat(e.target.value); if(isNaN(v)) return; h.d=clamp(v,2,40); onStateChanged(keep); });
+  document.getElementById('fLabel').addEventListener('input', function(e){ h.label=e.target.value; onStateChanged(keep); });
+  var kd = document.getElementById('fKD'); if(kd) kd.addEventListener('input', function(e){ var v=parseFloat(e.target.value); if(v>0) h.knobDia=clamp(v,10,40); else delete h.knobDia; onStateChanged(keep); });
+  var rot = document.getElementById('fRot'); if(rot) rot.addEventListener('input', function(e){ h.rotation=+e.target.value; onStateChanged(keep); });
+  var col = document.getElementById('fColor'); if(col) col.addEventListener('input', function(e){ h.color=e.target.value; onStateChanged(keep); });
+  document.getElementById('fDelete').addEventListener('click', deleteSelected);
+}
+
+/* =====================================================================
+   Tabs
+===================================================================== */
+var tabs = document.querySelectorAll('.tab');
+var panes = { template: document.getElementById('paneTemplate'), preview: document.getElementById('panePreview') };
+function previewActive(){ return panes.preview.classList.contains('active'); }
+tabs.forEach(function(t){
+  t.addEventListener('click', function(){
+    tabs.forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    Object.keys(panes).forEach(function(k){ panes[k].classList.toggle('active', k===t.dataset.view); });
+    if(t.dataset.view==='preview'){
+      requestAnimationFrame(function(){ resizeThree(); if(sceneDirty) rebuildScene(); });
+    } else {
+      requestAnimationFrame(resizeTemplateCanvas);
+    }
+  });
+});
+
+/* =====================================================================
+   2D template editor
+===================================================================== */
+var tCanvas = document.getElementById('templateCanvas');
+var tCtx = tCanvas.getContext('2d');
+var view = { scale:4, padX:44, padTop:44, padBottom:56 };
+
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function resizeTemplateCanvas(){
+  var rect = tCanvas.parentElement.getBoundingClientRect();
+  if(rect.width<2 || rect.height<2) return;
+  var dpr = window.devicePixelRatio || 1;
+  tCanvas.width = Math.round(rect.width*dpr);
+  tCanvas.height = Math.round(rect.height*dpr);
+  tCtx.setTransform(dpr,0,0,dpr,0,0);
+  fitScale();
+  drawTemplate();
+}
+function fitScale(){
+  var rect = tCanvas.parentElement.getBoundingClientRect();
+  var fd = faceDims(state.activeFace);
+  var availW = rect.width - view.padX*2 - 10;
+  var availH = rect.height - view.padTop - view.padBottom;
+  view.scale = Math.max(1, Math.min(availW/fd.w, availH/fd.h, 10));
+}
+function origin(fd){
+  var rect = tCanvas.parentElement.getBoundingClientRect();
+  var ox = view.padX + Math.max(0,(rect.width - view.padX*2 - fd.w*view.scale)/2);
+  var oy = view.padTop + Math.max(0,(rect.height - view.padTop - view.padBottom - fd.h*view.scale)/2);
+  return [ox,oy];
+}
+function mmToPx(x,y,fd){ var o=origin(fd); return [o[0]+x*view.scale, o[1]+y*view.scale]; }
+function pxToMm(px,py,fd){ var o=origin(fd); return [(px-o[0])/view.scale, (py-o[1])/view.scale]; }
+
+function roundedRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function drawArtwork(ctx, face, fd, ppm, ox, oy){
+  if(!artSource || face!=='top') return;
+  var aw = state.enclosure.artW || fd.w, ah = state.enclosure.artH || fd.h;
+  ctx.drawImage(artSource, ox + (fd.w-aw)/2*ppm, oy + (fd.h-ah)/2*ppm, aw*ppm, ah*ppm);
+}
+function drawGlyph(ctx, type, r, rotation){
+  ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = Math.max(1, r*0.12);
+  if(type==='toggle'){
+    ctx.rotate((rotation||0)*Math.PI/180);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-r*1.7); ctx.stroke();
+  } else if(type==='footswitch'){
+    ctx.beginPath(); ctx.arc(0,0,r*0.55,0,Math.PI*2); ctx.stroke();
+  } else if(type==='jack'){
+    ctx.beginPath(); ctx.arc(0,0,r*0.4,0,Math.PI*2); ctx.stroke();
+  } else if(type==='dcjack'){
+    ctx.beginPath(); ctx.arc(0,0,r*0.3,0,Math.PI*2); ctx.fill();
+  } else if(type==='led'){
+    ctx.beginPath(); ctx.arc(0,0,r*0.45,0,Math.PI*2); ctx.fill();
+  } else if(type==='knob'){
+    ctx.beginPath(); ctx.moveTo(0,-r*0.15); ctx.lineTo(0,-r*0.75); ctx.stroke();
+  }
+}
+
+function drawTemplate(){
+  var rect = tCanvas.parentElement.getBoundingClientRect();
+  if(rect.width<2) return;
+  var enc = state.enclosure, face = state.activeFace, fd = faceDims(face);
+  var textDim = css('--text-dim'), border = css('--border');
+  tCtx.clearRect(0,0,rect.width,rect.height);
+  tCtx.fillStyle = css('--bg');
+  tCtx.fillRect(0,0,rect.width,rect.height);
+
+  var p0 = mmToPx(0,0,fd), p1 = mmToPx(fd.w,fd.h,fd);
+  var pw = p1[0]-p0[0], ph = p1[1]-p0[1];
+  var rad = Math.min(8, view.scale*2.5);
+
+  tCtx.save();
+  roundedRectPath(tCtx, p0[0], p0[1], pw, ph, rad);
+  tCtx.clip();
+  tCtx.fillStyle = enc.color;
+  tCtx.fillRect(p0[0]-1,p0[1]-1,pw+2,ph+2);
+  drawArtwork(tCtx, face, fd, view.scale, p0[0], p0[1]);
+  tCtx.lineWidth = 1;
+  tCtx.strokeStyle = "rgba(0,0,0,0.10)";
+  for(var gx=10; gx<fd.w; gx+=10){ var a=mmToPx(gx,0,fd); tCtx.beginPath(); tCtx.moveTo(a[0],p0[1]); tCtx.lineTo(a[0],p1[1]); tCtx.stroke(); }
+  for(var gy=10; gy<fd.h; gy+=10){ var b=mmToPx(0,gy,fd); tCtx.beginPath(); tCtx.moveTo(p0[0],b[1]); tCtx.lineTo(p1[0],b[1]); tCtx.stroke(); }
+  tCtx.setLineDash([5,4]); tCtx.strokeStyle = "rgba(200,60,40,0.55)";
+  var cm = mmToPx(fd.w/2, fd.h/2, fd);
+  tCtx.beginPath(); tCtx.moveTo(cm[0],p0[1]); tCtx.lineTo(cm[0],p1[1]); tCtx.moveTo(p0[0],cm[1]); tCtx.lineTo(p1[0],cm[1]); tCtx.stroke();
+  tCtx.setLineDash([]);
+  tCtx.restore();
+
+  roundedRectPath(tCtx, p0[0], p0[1], pw, ph, rad);
+  tCtx.lineWidth = 1.5; tCtx.strokeStyle = border; tCtx.stroke();
+
+  var step = view.scale >= 4 ? 10 : 20;
+  tCtx.fillStyle = textDim; tCtx.font = "10px 'IBM Plex Mono',monospace";
+  tCtx.textAlign='center'; tCtx.textBaseline='bottom';
+  for(var rx=0; rx<=fd.w; rx+=step){ var rp=mmToPx(rx,0,fd); tCtx.fillText(rx, rp[0], p0[1]-5); }
+  tCtx.textAlign='right'; tCtx.textBaseline='middle';
+  for(var ry=0; ry<=fd.h; ry+=step){ var rq=mmToPx(0,ry,fd); tCtx.fillText(ry, p0[0]-7, rq[1]); }
+
+  tCtx.textAlign='left'; tCtx.textBaseline='top';
+  tCtx.fillText(faceInfo(face).label.toUpperCase()+"   "+fd.w+" x "+fd.h+" mm   viewed from outside   dashed = center", 12, 10);
+
+  var dk = isDark() ? 'dark' : 'light';
+  state.holes.forEach(function(h){
+    if(h.face !== face) return;
+    var def = TYPES[h.type];
+    var c = mmToPx(h.x,h.y,fd);
+    var r = Math.max((h.d/2)*view.scale, 3);
+    var selected = state.selectedIds.indexOf(h.id)>=0;
+    tCtx.beginPath(); tCtx.arc(c[0],c[1], r, 0, Math.PI*2);
+    tCtx.fillStyle = "rgba(8,8,8,0.88)"; tCtx.fill();
+    tCtx.lineWidth = selected? 3:2; tCtx.strokeStyle = def.hex[dk]; tCtx.stroke();
+    if(selected){
+      tCtx.beginPath(); tCtx.arc(c[0],c[1], r+5, 0, Math.PI*2);
+      tCtx.setLineDash([3,3]); tCtx.lineWidth=1.3; tCtx.strokeStyle = def.hex[dk]; tCtx.stroke(); tCtx.setLineDash([]);
+    }
+    tCtx.save(); tCtx.translate(c[0],c[1]); drawGlyph(tCtx, h.type, Math.max(r,7), h.rotation); tCtx.restore();
+    if(h.label){
+      tCtx.font = "600 10px 'IBM Plex Mono',monospace"; tCtx.fillStyle = "#fff"; tCtx.strokeStyle = "rgba(0,0,0,.65)"; tCtx.lineWidth = 3;
+      tCtx.textAlign='center'; tCtx.textBaseline='top';
+      tCtx.strokeText(h.label, c[0], c[1]+r+4); tCtx.fillText(h.label, c[0], c[1]+r+4);
+    }
+  });
+}
+
+var drag = null;
+function hitTestHole(mx,my){
+  for(var i=state.holes.length-1;i>=0;i--){
+    var h = state.holes[i];
+    if(h.face !== state.activeFace) continue;
+    var dx = h.x-mx, dy = h.y-my;
+    if(Math.sqrt(dx*dx+dy*dy) <= Math.max(h.d/2, 3.5)+1.5) return h;
+  }
+  return null;
+}
+function eventMm(e){
+  var rect = tCanvas.getBoundingClientRect();
+  var fd = faceDims(state.activeFace);
+  var mm = pxToMm(e.clientX-rect.left, e.clientY-rect.top, fd);
+  return [clamp(mm[0],0,fd.w), clamp(mm[1],0,fd.h)];
+}
+tCanvas.addEventListener('pointerdown', function(e){
+  var mm = eventMm(e);
+  if(state.activeTool){
+    var nh = makeHole(state.activeTool, mm[0], mm[1], state.activeFace);
+    state.holes.push(nh);
+    state.selectedIds = [nh.id];
+    onStateChanged();
+    return;
+  }
+  var hit = hitTestHole(mm[0],mm[1]);
+  if(hit){
+    if(e.shiftKey){ selectHole(hit.id, true); return; }
+    if(state.selectedIds.indexOf(hit.id)<0) state.selectedIds = [hit.id];
+    drag = { id:hit.id, offX:mm[0]-hit.x, offY:mm[1]-hit.y };
+    tCanvas.setPointerCapture(e.pointerId);
+    renderUI();
+  } else if(!e.shiftKey){
+    state.selectedIds = []; renderUI();
+  }
+});
+tCanvas.addEventListener('pointermove', function(e){
+  if(!drag) return;
+  var h = holeById(drag.id); if(!h) return;
+  var mm = eventMm(e);
+  var fd = faceDims(h.face);
+  h.x = clamp(round1(mm[0]-drag.offX),0,fd.w); h.y = clamp(round1(mm[1]-drag.offY),0,fd.h);
+  onStateChanged();
+});
+window.addEventListener('pointerup', function(){ drag=null; });
+new ResizeObserver(resizeTemplateCanvas).observe(document.querySelector('.tcanvas-box'));
+
+/* =====================================================================
+   Face textures (3D)
+===================================================================== */
+function buildFaceCanvas(face){
+  var enc = state.enclosure, fd = faceDims(face);
+  var ppm = face==='top' ? 12 : 9;
+  var c = document.createElement('canvas');
+  c.width = Math.max(2,Math.round(fd.w*ppm)); c.height = Math.max(2,Math.round(fd.h*ppm));
+  var ctx = c.getContext('2d');
+  ctx.fillStyle = enc.color; ctx.fillRect(0,0,c.width,c.height);
+  drawArtwork(ctx, face, fd, ppm, 0, 0);
+  var ink = contrastColor(enc.color);
+  state.holes.forEach(function(h){
+    if(h.face !== face) return;
+    var cx = h.x*ppm, cy = h.y*ppm, r = (h.d/2)*ppm;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle="#050505"; ctx.fill();
+    ctx.lineWidth = Math.max(1,r*0.12); ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.stroke();
+    if(h.label){
+      ctx.font = "600 "+Math.round(ppm*2.6)+"px 'IBM Plex Mono',monospace";
+      ctx.fillStyle = ink; ctx.textAlign='center'; ctx.textBaseline='top';
+      ctx.fillText(h.label.toUpperCase(), cx, cy+r+ppm*0.8);
+    }
+  });
+  return c;
+}
+function contrastColor(hex){
+  var c = hex.replace('#',''); if(c.length===3) c=c.split('').map(function(x){return x+x;}).join('');
+  var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
+  return (r*299+g*587+b*114)/1000 >= 150 ? "#20201c" : "#f2efe6";
+}
+
+/* =====================================================================
+   3D preview
+===================================================================== */
+var three = { renderer:null, scene:null, camera:null, group:null };
+var sceneDirty = true, rebuildQueued = false;
+
+function initThree(){
+  var mount = document.getElementById('three-mount');
+  three.renderer = new THREE.WebGLRenderer({ antialias:true });
+  three.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  mount.appendChild(three.renderer.domElement);
+  three.scene = new THREE.Scene();
+  three.camera = new THREE.PerspectiveCamera(36, 1, 1, 5000);
+  three.scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3626, 0.62));
+  var key = new THREE.DirectionalLight(0xffffff, 0.72); key.position.set(120,220,160); three.scene.add(key);
+  var fill = new THREE.DirectionalLight(0xbcd4e6, 0.3); fill.position.set(-160,90,-140); three.scene.add(fill);
+  three.group = new THREE.Group();
+  three.scene.add(three.group);
+  applyThemeBackground();
+  rebuildScene();
+  resizeThree();
+  setCamera('reset');
+  requestAnimationFrame(animate);
+}
+function applyThemeBackground(){
+  three.scene.background = new THREE.Color(isDark() ? 0x12151a : 0xdcd6c4);
+}
+function resizeThree(){
+  if(!three.renderer) return;
+  var rect = document.getElementById('three-mount').getBoundingClientRect();
+  if(rect.width<2||rect.height<2) return;
+  three.renderer.setSize(rect.width, rect.height);
+  three.camera.aspect = rect.width/rect.height;
+  three.camera.updateProjectionMatrix();
+}
+new ResizeObserver(resizeThree).observe(document.getElementById('three-mount'));
+
+var orbit = { theta:0.7, phi:1.1, radius:220, target:null };
+function updateCamera(){
+  var t = orbit.target, sp = Math.sin(orbit.phi);
+  three.camera.position.set(
+    t.x + orbit.radius*sp*Math.sin(orbit.theta),
+    t.y + orbit.radius*Math.cos(orbit.phi),
+    t.z + orbit.radius*sp*Math.cos(orbit.theta)
+  );
+  three.camera.lookAt(t);
+}
+function setCamera(name){
+  var e = state.enclosure;
+  orbit.target = new THREE.Vector3(0, -e.depth*0.15, 0);
+  orbit.radius = (Math.max(e.w,e.h)*1.9 + 50) * Math.max(1, 0.95/three.camera.aspect);
+  if(name==='front'){ orbit.theta = 0.12; orbit.phi = 1.0; }
+  else if(name==='back'){ orbit.theta = Math.PI-0.15; orbit.phi = 1.0; }
+  else if(name==='top'){ orbit.theta = 0; orbit.phi = 0.13; orbit.radius = orbit.radius*1.05; }
+  else { orbit.theta = Math.PI*0.2; orbit.phi = Math.PI*0.32; }
+  updateCamera();
+}
+var btnHideKnobs = document.getElementById('btnHideKnobs');
+btnHideKnobs.addEventListener('click', function(){
+  hideKnobs = !hideKnobs;
+  btnHideKnobs.classList.toggle('active', hideKnobs);
+  btnHideKnobs.setAttribute('aria-pressed', hideKnobs ? 'true' : 'false');
+  btnHideKnobs.textContent = hideKnobs ? 'Show knobs' : 'Hide knobs';
+  rebuildScene();
+});
+document.querySelectorAll('[data-cam]').forEach(function(b){
+  b.addEventListener('click', function(){ setCamera(b.dataset.cam); });
+});
+
+var mount3 = document.getElementById('three-mount');
+var dragCam = null;
+mount3.addEventListener('pointerdown', function(e){
+  dragCam = { x:e.clientX, y:e.clientY, theta:orbit.theta, phi:orbit.phi };
+  mount3.setPointerCapture(e.pointerId);
+});
+mount3.addEventListener('pointermove', function(e){
+  if(!dragCam) return;
+  orbit.theta = dragCam.theta - (e.clientX-dragCam.x)*0.008;
+  orbit.phi = clamp(dragCam.phi - (e.clientY-dragCam.y)*0.008, 0.1, Math.PI-0.1);
+  updateCamera();
+});
+window.addEventListener('pointerup', function(){ dragCam=null; });
+mount3.addEventListener('wheel', function(e){
+  e.preventDefault();
+  orbit.radius = clamp(orbit.radius*(1+e.deltaY*0.001), 50, 1200);
+  updateCamera();
+}, { passive:false });
+function animate(){
+  requestAnimationFrame(animate);
+  if(previewActive()) three.renderer.render(three.scene, three.camera);
+}
+
+function metalMat(color){ return new THREE.MeshStandardMaterial({ color:color, metalness:0.75, roughness:0.35 }); }
+function plasticMat(color){ return new THREE.MeshStandardMaterial({ color:color, metalness:0.05, roughness:0.55 }); }
+
+/* MXR-style knob body: 8 rounded lobes, slight taper, rounded shoulder. Built at 25 mm skirt size, 10 mm tall. */
+function lobedKnobBody(){
+  var rings = [
+    {y:0,   r:9.7, a:1},   {y:3,   r:9.4, a:1},   {y:7,   r:8.9, a:0.95},
+    {y:8.4, r:8.6, a:0.75},{y:9.2, r:7.8, a:0.45},{y:9.7, r:6.7, a:0.2},
+    {y:10,  r:5.2, a:0.05}
+  ];
+  var seg = 64, pos = [], idx = [];
+  rings.forEach(function(rg){
+    for(var j=0;j<seg;j++){
+      var th = j/seg*Math.PI*2;
+      var rr = rg.r*(1 - rg.a*0.09*Math.pow(Math.abs(Math.sin(4*th)),1.6));
+      pos.push(rr*Math.sin(th), rg.y, rr*Math.cos(th));
+    }
+  });
+  pos.push(0, 10, 0);
+  var center = rings.length*seg;
+  for(var i=0;i<rings.length-1;i++){
+    for(var k=0;k<seg;k++){
+      var a=i*seg+k, b=i*seg+(k+1)%seg, c=(i+1)*seg+k, dd=(i+1)*seg+(k+1)%seg;
+      idx.push(a,b,c, b,dd,c);
+    }
+  }
+  var top = (rings.length-1)*seg;
+  for(var t=0;t<seg;t++) idx.push(top+t, top+(t+1)%seg, center);
+  var geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return geo;
+}
+var hideKnobs = false;
+function knobDiameter(h){
+  if(h.knobDia) return h.knobDia;
+  var best = 25;
+  state.holes.forEach(function(o){
+    if(o!==h && o.type==='knob' && o.face===h.face) best = Math.min(best, Math.hypot(o.x-h.x, o.y-h.y) - 1);
+  });
+  return clamp(best, 12, 25);
+}
+
+function buildHoleComponent(hole){
+  var g = new THREE.Group(), d = hole.d, m;
+  function add(geo, mat, y){ m = new THREE.Mesh(geo, mat); m.position.y = y; g.add(m); return m; }
+  if(hole.type==='knob'){
+    var bushR = d/2*0.82;
+    add(new THREE.CylinderGeometry(bushR,bushR,3.2,24), metalMat(0xc7cbd0), 1.6);
+    if(!hideKnobs){
+    var kcol = hole.color||"#ecebe6";
+    var kmat = new THREE.MeshStandardMaterial({ color:kcol, metalness:0.02, roughness:0.5 });
+    var inkMat = new THREE.MeshStandardMaterial({ color:contrastColor(kcol), metalness:0, roughness:0.6 });
+    var knob = new THREE.Group(); knob.position.y = 3.0; knob.scale.setScalar(knobDiameter(hole)/25);
+    var skirt = new THREE.Mesh(new THREE.CylinderGeometry(12.0,12.5,2.3,56), kmat); skirt.position.y = 1.15; knob.add(skirt);
+    var body = new THREE.Mesh(lobedKnobBody(), kmat); body.position.y = 2.3; knob.add(body);
+    var line = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.3, 5.0), inkMat); line.position.set(0, 2.3+10.05, -2.8); knob.add(line);
+    var dot = new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,0.2,16), inkMat); dot.position.set(0, 2.4, -10.9); knob.add(dot);
+    g.add(knob);
+    }
+  } else if(hole.type==='toggle'){
+    var tR = d/2*0.85, nutR = d/2*1.4;
+    add(new THREE.CylinderGeometry(nutR,nutR,1.6,6), metalMat(0xc7cbd0), 0.8);
+    add(new THREE.CylinderGeometry(tR,tR,5.5,24), metalMat(0xaeb3b9), 2.75);
+    var dome = add(new THREE.SphereGeometry(tR*0.9,20,12), metalMat(0xd3d6da), 5.5);
+    dome.scale.y = 0.45;
+    var chrome = new THREE.MeshStandardMaterial({ color:0xe2e5e8, metalness:0.9, roughness:0.22 });
+    var azimuth = new THREE.Group(); azimuth.position.y = 5.7; azimuth.rotation.y = -(hole.rotation||0)*Math.PI/180;
+    var tilt = new THREE.Group(); tilt.rotation.x = -0.45;
+    var bat = new THREE.Mesh(new THREE.CylinderGeometry(0.85,1.5,11,16), chrome); bat.position.y = 5.5;
+    var tip = new THREE.Mesh(new THREE.SphereGeometry(0.9,14,10), chrome); tip.position.y = 11;
+    tilt.add(bat); tilt.add(tip); azimuth.add(tilt); g.add(azimuth);
+  } else if(hole.type==='footswitch'){
+    add(new THREE.CylinderGeometry(d/2*1.05,d/2*1.05,2,28), metalMat(0xbfc4c9), 1);
+    add(new THREE.CylinderGeometry(d/2*0.6,d/2*0.6,5,24), metalMat(0xa9aeb3), 4.5);
+    add(new THREE.CylinderGeometry(d/2*0.95, d/2*1.1, 7, 28), plasticMat(hole.color||"#1c1c1c"), 8);
+  } else if(hole.type==='jack' || hole.type==='dcjack'){
+    var dc = hole.type==='dcjack';
+    var nutR = d/2*(dc?1.05:1.15), barR = d/2*(dc?0.62:0.5), barH = dc?7:9;
+    add(new THREE.CylinderGeometry(nutR,nutR,3,6), metalMat(0xc7cbd0), 1.5);
+    add(new THREE.CylinderGeometry(barR,barR,barH,18), metalMat(0x6f7378), 3+barH/2);
+  } else if(hole.type==='led'){
+    add(new THREE.CylinderGeometry(d/2*1.25,d/2*1.25,2,20), plasticMat(0x24241f), 1);
+    var col = hole.color||"#ff3b30", lr = d/2*0.78;
+    var lens = add(new THREE.SphereGeometry(lr,16,12), new THREE.MeshStandardMaterial({ color:col, emissive:col, emissiveIntensity:0.75, roughness:0.3, metalness:0 }), 2+lr*0.5);
+    lens.scale.y = 0.7;
+  } else {
+    add(new THREE.CylinderGeometry(d/2*1.02, d/2*0.9, 1.6, 24), plasticMat(0x2c2c28), 0.8);
+  }
+  return g;
+}
+
+function facePlacement(face, x, y){
+  var e = state.enclosure, W=e.w, L=e.h;
+  var P = Math.PI/2;
+  switch(face){
+    case 'end_top':    return { p:[W/2-x, -y, -L/2], r:[-P,0,0], n:[0,0,-1] };
+    case 'end_bottom': return { p:[x-W/2, -y,  L/2], r:[ P,0,0], n:[0,0, 1] };
+    case 'left':       return { p:[-W/2, -y, x-L/2], r:[0,0, P],  n:[-1,0,0] };
+    case 'right':      return { p:[ W/2, -y, L/2-x], r:[0,0,-P],  n:[ 1,0,0] };
+    default:           return { p:[x-W/2, 0, y-L/2], r:[0,0,0],   n:[0,1,0] };
+  }
+}
+function clearGroup(){
+  while(three.group.children.length){
+    var o = three.group.children[0];
+    three.group.remove(o);
+    o.traverse(function(n){
+      if(n.geometry) n.geometry.dispose();
+      if(n.material){ if(n.material.map) n.material.map.dispose(); n.material.dispose(); }
+    });
+  }
+}
+function rebuildScene(){
+  if(!three.group) return;
+  sceneDirty = false;
+  clearGroup();
+  var e = state.enclosure, W=e.w, L=e.h, D=e.depth, off = 0.05;
+
+  var body = new THREE.Mesh(new THREE.BoxGeometry(W, D, L), new THREE.MeshStandardMaterial({ color:e.color, metalness:0.3, roughness:0.55 }));
+  body.position.y = -D/2;
+  three.group.add(body);
+
+  var planes = {
+    top:        { size:[W,L], pos:[0, off, 0],           rot:[-Math.PI/2,0,0] },
+    end_top:    { size:[W,D], pos:[0,-D/2,-L/2-off],     rot:[0,Math.PI,0] },
+    end_bottom: { size:[W,D], pos:[0,-D/2, L/2+off],     rot:[0,0,0] },
+    left:       { size:[L,D], pos:[-W/2-off,-D/2,0],     rot:[0,-Math.PI/2,0] },
+    right:      { size:[L,D], pos:[ W/2+off,-D/2,0],     rot:[0, Math.PI/2,0] }
+  };
+  Object.keys(planes).forEach(function(k){
+    var pl = planes[k];
+    var tex = new THREE.CanvasTexture(buildFaceCanvas(k));
+    tex.anisotropy = 4;
+    var mesh = new THREE.Mesh(new THREE.PlaneGeometry(pl.size[0], pl.size[1]), new THREE.MeshStandardMaterial({ map:tex, metalness:0.3, roughness:0.55 }));
+    mesh.position.set(pl.pos[0],pl.pos[1],pl.pos[2]);
+    mesh.rotation.set(pl.rot[0],pl.rot[1],pl.rot[2]);
+    three.group.add(mesh);
+  });
+
+  state.holes.forEach(function(h){
+    var pl = facePlacement(h.face, h.x, h.y);
+    var comp = buildHoleComponent(h);
+    comp.position.set(pl.p[0]+pl.n[0]*0.08, pl.p[1]+pl.n[1]*0.08, pl.p[2]+pl.n[2]*0.08);
+    comp.rotation.set(pl.r[0],pl.r[1],pl.r[2]);
+    three.group.add(comp);
+  });
+}
+
+/* =====================================================================
+   Update pipeline
+===================================================================== */
+function renderUI(){
+  renderFaceStrip();
+  renderHoleList();
+  renderInspector();
+  drawTemplate();
+}
+function onStateChanged(opts){
+  opts = opts || {};
+  saveDebounced();
+  renderFaceStrip();
+  renderHoleList();
+  if(!opts.keepInspector) renderInspector();
+  drawTemplate();
+  sceneDirty = true;
+  if(three.scene && previewActive() && !rebuildQueued){
+    rebuildQueued = true;
+    requestAnimationFrame(function(){ rebuildQueued=false; rebuildScene(); });
+  }
+}
+
+/* =====================================================================
+   Tayda drill-file import
+   Format: one hole per line, "SIDE  DIAMETER  X  Y" (tab separated), mm, origin at the
+   face center, +y up. Side A = top plate.
+===================================================================== */
+function parseTaydaTxt(text){
+  var out = [];
+  text.split(/\r?\n/).forEach(function(line){
+    var p = line.trim().split(/[\t ,;]+/);
+    if(p.length < 4) return;
+    var side = p[0].toUpperCase();
+    var d = parseFloat(p[1]), x = parseFloat(p[2]), y = parseFloat(p[3]);
+    if(!/^[A-Z]$/.test(side) || isNaN(d) || isNaN(x) || isNaN(y)) return;
+    out.push({ side:side, d:d, x:x, y:y });
+  });
+  return out;
+}
+function detectPreset(name){
+  var n = (name||"").toUpperCase();
+  var keys = ["1590DD","1590BB","1590A","1590B","125B"];
+  for(var i=0;i<keys.length;i++){
+    if(n.indexOf(keys[i])>=0) return PRESETS.filter(function(p){return p.key===keys[i];})[0];
+  }
+  return null;
+}
+var DEFAULT_SIDE_MAP = { A:"top", B:"end_top", C:"end_bottom", D:"left", E:"right" };
+
+function guessType(face, d, nearFootswitch){
+  if(face==='top'){
+    if(d>=12 && d<=14.5) return "footswitch";
+    if(d>=7.4 && d<=9.3) return "knob";
+    if(d>=9.4 && d<=11.4) return "jack";
+    if(d>=4.5 && d<=7.3) return nearFootswitch ? "led" : "toggle";
+    return "blank";
+  }
+  if(d>=11.5 && d<=14) return "dcjack";
+  if(d>=9 && d<11.5) return "jack";
+  if(d>=7.4 && d<9) return "knob";
+  if(d>=4.5 && d<=7.3) return "led";
+  return "blank";
+}
+
+function openModal(html, onMount){
+  var backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop';
+  backdrop.innerHTML = '<div class="modal">'+html+'</div>';
+  document.body.appendChild(backdrop);
+  function close(){ backdrop.remove(); }
+  backdrop.addEventListener('click', function(e){ if(e.target===backdrop) close(); });
+  onMount(backdrop, close);
+}
+
+document.getElementById('btnImport').addEventListener('click', function(){
+  openModal(
+    '<div class="modal-head"><h3>Import a Tayda drill file</h3><button class="btn small ghost" data-close>&times;</button></div>'+
+    '<div class="modal-body">'+
+      '<p class="muted">Use the <span class="mono">.txt</span> Tayda gives you with your design (rows like <span class="mono">A &nbsp;8.0 &nbsp;20.32 &nbsp;12.7</span>: side, diameter, x, y from the face center). Each hole is matched to a part by its diameter and side; check the result and fix anything it guessed wrong.</p>'+
+      '<div class="file-drop" id="txtDrop">Choose the .txt drill file</div>'+
+      '<input type="file" id="txtInput" accept=".txt,text/plain" style="display:none;">'+
+      '<div class="field" style="margin-top:12px;"><label>or paste its contents</label><textarea class="code" id="txtArea" placeholder="A\t8.0\t20.32\t12.7"></textarea></div>'+
+      '<div id="impSummary"></div>'+
+    '</div>'+
+    '<div class="modal-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="impApply" disabled>Import holes</button></div>',
+    function(modal, close){
+      modal.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', close); });
+      var area = modal.querySelector('#txtArea'), summary = modal.querySelector('#impSummary');
+      var drop = modal.querySelector('#txtDrop'), fileEl = modal.querySelector('#txtInput'), apply = modal.querySelector('#impApply');
+      var parsed = [], preset = null, sideMap = Object.assign({}, DEFAULT_SIDE_MAP), useReplace = true, usePreset = true;
+
+      function refresh(){
+        parsed = parseTaydaTxt(area.value);
+        apply.disabled = !parsed.length;
+        if(!parsed.length){ summary.innerHTML = area.value.trim() ? '<div class="summary">No holes found. Each line needs a side letter, diameter, x and y.</div>' : ''; return; }
+        var sides = {}; parsed.forEach(function(p){ sides[p.side] = (sides[p.side]||0)+1; });
+        var letters = Object.keys(sides).sort();
+        var html = '<div class="summary"><span class="mono">'+parsed.length+'</span> holes found</div>';
+        letters.forEach(function(s){
+          html += '<div class="map-row"><span class="side-tag">Side '+s+' &middot; '+sides[s]+' hole'+(sides[s]===1?'':'s')+'</span>'+
+            '<select data-side="'+s+'">'+FACES.map(function(f){ return '<option value="'+f.id+'"'+((sideMap[s]||"top")===f.id?' selected':'')+'>'+esc(f.label)+'</option>'; }).join('')+'</select></div>';
+        });
+        if(preset){
+          html += '<label class="check"><input type="checkbox" id="chkPreset"'+(usePreset?' checked':'')+'> Set enclosure to '+preset.key+' ('+preset.w+' &times; '+preset.h+' &times; '+preset.d+' mm) from the file name</label>';
+        }
+        html += '<label class="check"><input type="checkbox" id="chkReplace"'+(useReplace?' checked':'')+'> Replace the holes already in this design</label>';
+        summary.innerHTML = html;
+        summary.querySelectorAll('select[data-side]').forEach(function(s){
+          s.addEventListener('change', function(){ sideMap[s.dataset.side] = s.value; });
+        });
+        var cp = summary.querySelector('#chkPreset'); if(cp) cp.addEventListener('change', function(){ usePreset = cp.checked; });
+        summary.querySelector('#chkReplace').addEventListener('change', function(e){ useReplace = e.target.checked; });
+      }
+      area.addEventListener('input', function(){ preset = null; refresh(); });
+      drop.addEventListener('click', function(){ fileEl.click(); });
+      fileEl.addEventListener('change', function(){
+        var f = fileEl.files[0]; if(!f) return;
+        var r = new FileReader();
+        r.onload = function(){
+          area.value = r.result;
+          preset = detectPreset(f.name);
+          drop.textContent = f.name;
+          refresh();
+        };
+        r.readAsText(f);
+      });
+      apply.addEventListener('click', function(){
+        if(preset && usePreset) applyPreset(preset);
+        var fresh = [];
+        var footsw = parsed.filter(function(p){ return (sideMap[p.side]||'top')==='top' && p.d>=12 && p.d<=14.5; });
+        parsed.forEach(function(p){
+          var face = sideMap[p.side] || 'top';
+          var fd = faceDims(face);
+          var near = footsw.some(function(f){ return Math.abs(f.x-p.x) < 30 && Math.abs(f.y-p.y) < 30; });
+          var type = guessType(face, p.d, near);
+          var h = makeHole(type, clamp(fd.w/2 + p.x, 0, fd.w), clamp(fd.h/2 - p.y, 0, fd.h), face);
+          h.d = p.d;
+          fresh.push(h);
+        });
+        state.holes = useReplace ? fresh : state.holes.concat(fresh);
+        state.selectedIds = []; state.activeFace = 'top';
+        syncEnclosureInputs(); fitScale();
+        onStateChanged();
+        setCamera('reset');
+        var blanks = fresh.filter(function(h){return h.type==='blank';}).length;
+        toast(fresh.length+" holes imported"+(blanks ? " - "+blanks+" need a part assigned" : " and matched to parts"));
+        close();
+      });
+    }
+  );
+});
+
+/* ---------- export / save ---------- */
+document.getElementById('btnExport').addEventListener('click', function(){
+  var json = JSON.stringify(state, function(k,v){ return (k==='selectedIds'||k==='activeTool') ? undefined : v; }, 2);
+  openModal(
+    '<div class="modal-head"><h3>Export / Save design</h3><button class="btn small ghost" data-close>&times;</button></div>'+
+    '<div class="modal-body">'+
+      '<p class="muted">Your layout saves to this browser automatically. Copy the JSON below as a backup, or paste one in to restore it. Artwork isn\'t stored - upload it again after restoring.</p>'+
+      '<div class="field"><label>Design JSON</label><textarea class="code" id="exportText" readonly>'+esc(json)+'</textarea></div>'+
+      '<button class="btn small" id="btnCopy">Copy to clipboard</button>'+
+      '<div class="field" style="margin-top:14px;"><label>Paste JSON to restore</label><textarea class="code" id="importText" placeholder="Paste exported JSON here"></textarea></div>'+
+    '</div>'+
+    '<div class="modal-foot"><button class="btn ghost" data-close>Close</button><button class="btn primary" id="mRestore">Restore pasted design</button></div>',
+    function(modal, close){
+      modal.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', close); });
+      modal.querySelector('#btnCopy').addEventListener('click', function(){
+        var ta = modal.querySelector('#exportText'); ta.focus(); ta.select();
+        try{ document.execCommand('copy'); toast('Copied'); }catch(e){ toast('Selected - press Ctrl/Cmd+C'); }
+      });
+      modal.querySelector('#mRestore').addEventListener('click', function(){
+        var raw = modal.querySelector('#importText').value.trim();
+        if(!raw){ toast('Paste JSON first'); return; }
+        try{
+          var data = JSON.parse(raw);
+          if(!data.enclosure || !Array.isArray(data.holes)) throw new Error('bad');
+          data.holes.forEach(function(h){ h.face = h.face || 'top'; });
+          state = Object.assign({ selectedIds:[], activeTool:null, activeFace:'top', nextId:1 }, data);
+          state.selectedIds = []; state.activeTool = null;
+          state.nextId = Math.max(state.nextId, state.holes.length+1000);
+          artSource = null; state.enclosure.artW = null; state.enclosure.artH = null; refreshArtUI();
+          syncEnclosureInputs(); fitScale(); onStateChanged(); updatePaletteUI();
+          toast('Design restored'); close();
+        }catch(e){ toast('That JSON could not be read'); }
+      });
+    }
+  );
+});
+
+document.getElementById('btnHelp').addEventListener('click', function(){
+  openModal(
+    '<div class="modal-head"><h3>How Faceplate works</h3><button class="btn small ghost" data-close>&times;</button></div>'+
+    '<div class="modal-body">'+
+      '<p><b>Import your Tayda drill file.</b> The <span class="mono">.txt</span> lists every hole with a side letter, a diameter and an x/y from the face center. Side A becomes the top plate; other letters map to the enclosure ends and sides (you can change the mapping when importing). Parts are guessed from hole diameter, so review them in the list on the right.</p>'+
+      '<p><b>Add your print file.</b> Upload the print-ready PDF and it is placed at its printed size, centered on the top plate. PNG and JPG work too; set their size in mm.</p>'+
+      '<p><b>Edit.</b> Use the face tabs above the template to switch between the top plate and the ends and sides. Click a hole to edit, drag to move, or pick a part on the left and click to add.</p>'+
+      '<p><b>Preview.</b> The 3D view shows every face. Use Back to see the jack end.</p>'+
+      '<p class="muted">Ends and sides are assumed to be viewed from outside with up toward the top plate. Enclosure sizes are the commonly quoted Hammond/Tayda dimensions - check them before ordering.</p>'+
+    '</div>'+
+    '<div class="modal-foot"><button class="btn primary" data-close>Got it</button></div>',
+    function(modal, close){ modal.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', close); }); }
+  );
+});
+
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if(three.scene) applyThemeBackground();
+    drawTemplate();
+  });
+}
+
+/* ---------- boot ---------- */
+function boot(){
+  if(!loadFromStorage()) loadExample();
+  syncEnclosureInputs();
+  refreshArtUI();
+  updatePaletteUI();
+  renderUI();
+  resizeTemplateCanvas();
+  initThree();
+}
+boot();
+
+})();
+</script>
+
+</body></html>
